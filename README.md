@@ -26,25 +26,6 @@ A decentralized, privacy-preserving machine learning pipeline built with **PyTor
 
 ## 🛠️ Tech Stack
 
-+---------------------------+          +---------------------------+
-|      Hospital Node A      |          |      Hospital Node B      |
-|   (Private Local Data)    |          |   (Private Local Data)    |
-+-------------+-------------+          +-------------+-------------+
-|                                      |
-Local Preprocessing                    Local Preprocessing
-|                                      |
-Local PyTorch Training                 Local PyTorch Training
-|                                      |
-Local Weights                          Local Weights
-|                                      |
-+------------------+-------------------+
-|
-[ Federated Averaging ]
-|
-v
-Global Model Evaluation
-🎯 Accuracy: 84.47%
-
 * **Frameworks:** [PyTorch](https://pytorch.org/), [PySyft](https://github.com/OpenMined/PySyft) (OpenMined)
 * **Data Processing & Analytics:** `scikit-learn`, `pandas`, `numpy`
 * **Architecture Style:** Decentralized / Federated Learning (PPML)
@@ -54,7 +35,34 @@ Global Model Evaluation
 ## 📊 Key Results & Insights
 
 * **Initial Baseline Challenge:** Uncalibrated feature distributions between training and testing environments initially dropped accuracy to ~51%.
-* **Resolution:** Synchronizing feature normalization pipelines across test and training distributions boosted test accuracy straight to **84.47%**.
+* **Resolution:** Synchronizing feature normalization pipelines across test and training distributions boosted test accuracy straight to **84.47%**
+
+## 🏗️ System Architecture & Workflow
+
+```mermaid
+graph TD
+    subgraph Hospital_A [Hospital Node A]
+        DataA[(Private Local Data)] --> PrepA[Local Preprocessing]
+        PrepA --> TrainA[Local PyTorch Training]
+        TrainA --> WeightA[Local Weights]
+    end
+
+    subgraph Hospital_B [Hospital Node B]
+        DataB[(Private Local Data)] --> PrepB[Local Preprocessing]
+        PrepB --> TrainB[Local PyTorch Training]
+        TrainB --> WeightB[Local Weights]
+    end
+
+    WeightA --> FedAvg[Central Data Scientist / FedAvg]
+    WeightB --> FedAvg
+
+    FedAvg --> GlobalModel[Global Model Evaluation]
+    GlobalModel --> Result["🎯 Accuracy: 84.47%"]
+
+    style Hospital_A fill:#1f2937,stroke:#3b82f6,color:#fff
+    style Hospital_B fill:#1f2937,stroke:#3b82f6,color:#fff
+    style FedAvg fill:#111827,stroke:#10b981,color:#fff
+    style Result fill:#064e3b,stroke:#10b981,color:#fff
 
 | Metric | Result |
 | :--- | :--- |
