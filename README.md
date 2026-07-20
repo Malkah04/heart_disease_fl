@@ -15,24 +15,27 @@ A decentralized, privacy-preserving machine learning pipeline built with **PyTor
 ---
 
 ## 🏗️ System Architecture & Workflow
-┌─────────────────────────┐          ┌─────────────────────────┐
-│   Hospital Node A       │          │   Hospital Node B       │
-│  (Private Local Data)   │          │  (Private Local Data)   │
-└───────────┬─────────────┘          └───────────┬─────────────┘
-│                                    │
-Local Preprocessing                  Local Preprocessing
-│                                    │
-Local PyTorch Training               Local PyTorch Training
-│                                    │
-Local Weights                        Local Weights
-│                                    │
-└─────────────────┬──────────────────┘
-│
-[ Federated Averaging ]
-│
-▼
-Global Model Evaluation
-🎯 Accuracy: 84.47%
+```mermaid
+flowchart TD
+    subgraph NodeA ["🏥 Hospital Node A"]
+        DataA[("Private Local Data A")] --> PrepA["Local Preprocessing"]
+        PrepA --> TrainA["Local PyTorch Training"]
+        TrainA --> WeightsA["Local Weights A"]
+    end
+
+    subgraph NodeB ["🏥 Hospital Node B"]
+        DataB[("Private Local Data B")] --> PrepB["Local Preprocessing"]
+        PrepB --> TrainB["Local PyTorch Training"]
+        TrainB --> WeightsB["Local Weights B"]
+    end
+
+    WeightsA --> FedAvg["⚡ Federated Averaging (FedAvg)"]
+    WeightsB --> FedAvg
+
+    FedAvg --> GlobalEval["🎯 Global Model Evaluation\nAccuracy: 84.47%"]
+
+    style FedAvg fill:#f9f,stroke:#333,stroke-width:2px
+    style GlobalEval fill:#bbf,stroke:#333,stroke-width:2px
 
 1. **Local Node Execution:** Each hospital runs an isolated training job locally using `@sy.syft_function`.
 2. **Feature Normalization:** Data is scaled independently using `StandardScaler` on local training partitions.
